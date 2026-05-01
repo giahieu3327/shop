@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Register</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Segoe UI;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#ff512f,#dd2476);
+}
+
+.card{
+    width:320px;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+}
+
+input, button {
+    box-sizing: border-box; /* Dòng này cực kỳ quan trọng */
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ddd; /* Thêm border cho đẹp */
+    border-radius: 6px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.link{
+    text-align:center;
+    margin-top:10px;
+    cursor:pointer;
+    color:#2563eb;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>📝 Register</h2>
+
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="register()">Create</button>
+
+    <div class="link" onclick="goLogin()">Back login</div>
+</div>
+
+<script>
+function register(){
+    fetch('/api/register',{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            username:username.value,
+            password:password.value
+        })
+    })
+    .then(()=>alert("OK"))
+    .then(()=>location.href="login.html");
+}
+
+function goLogin(){
+    location.href="login.html";
+}
+</script>
+
+</body>
+</html>

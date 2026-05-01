@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Orders</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Segoe UI;
+    background:#0f172a;
+    color:white;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    padding:15px;
+    background:#111827;
+}
+
+.container{
+    padding:20px;
+}
+
+.item{
+    background:#1f2937;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+}
+
+button{
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    margin-right:10px;
+    cursor:pointer;
+}
+
+.home{ background:#3b82f6; color:white; }
+.logout{ background:#ef4444; color:white; }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h3>📦 Orders</h3>
+</div>
+
+<div class="container">
+
+<div id="orders">Loading...</div>
+
+<button class="home" onclick="goHome()">Home</button>
+<button class="logout" onclick="logout()">Logout</button>
+
+</div>
+
+<script>
+let user = JSON.parse(localStorage.getItem("user"));
+if(!user) location.href="login.html";
+
+fetch('/api/orders/'+user.id)
+.then(r=>r.json())
+.then(data=>{
+    let html="";
+    data.forEach(o=>{
+        html+=`<div class="item">${o.name} - ${o.price}</div>`;
+    });
+    orders.innerHTML = html;
+});
+
+function goHome(){
+    location.href="index.html";
+}
+
+function logout(){
+    localStorage.removeItem("user");
+    location.href="login.html";
+}
+</script>
+
+</body>
+</html>

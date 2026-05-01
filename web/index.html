@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mini Shop</title>
+
+<style>
+body{
+    margin:0;
+    font-family: "Segoe UI", sans-serif;
+    background:#0f172a;
+    color:white;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 25px;
+    background:#111827;
+    box-shadow:0 2px 10px rgba(0,0,0,0.4);
+}
+
+.header h2{
+    margin:0;
+    font-size:20px;
+}
+
+/* BUTTON */
+button{
+    border:none;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:500;
+}
+
+.btn{
+    display:flex;
+    gap:10px;
+}
+
+.blue{ background:#3b82f6; color:white; }
+.red{ background:#ef4444; color:white; }
+
+/* CONTAINER */
+.container{
+    max-width:1100px;
+    margin:20px auto;
+    padding:10px;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap:20px;
+}
+
+/* CARD */
+.card{
+    background:#1f2937;
+    border-radius:14px;
+    padding:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
+    transition:0.2s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card h3{
+    margin:0;
+}
+
+.price{
+    color:#22c55e;
+    font-weight:bold;
+    margin:8px 0;
+}
+
+.desc{
+    font-size:14px;
+    color:#cbd5e1;
+    margin-bottom:10px;
+}
+
+/* BUY BUTTON */
+.buy{
+    width:100%;
+    background:#22c55e;
+    color:white;
+}
+.buy:hover{
+    background:#16a34a;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>🛒 Mini Shop</h2>
+
+    <div class="btn">
+        <button class="blue" onclick="goOrders()">📦 Đơn hàng</button>
+        <button class="red" onclick="logout()">🚪 Logout</button>
+    </div>
+</div>
+
+<div id="products" class="container">Loading...</div>
+
+<script>
+// CHECK LOGIN
+let user = JSON.parse(localStorage.getItem("user"));
+if(!user){
+    location.href="login.html";
+}
+
+// LOAD PRODUCTS
+fetch('/api/products')
+.then(res=>res.json())
+.then(data=>{
+    let html = "";
+    data.forEach(p=>{
+        html += `
+        <div class="card">
+            <h3>${p.name}</h3>
+            <div class="price">💰 ${p.price.toLocaleString()} VND</div>
+            <div class="desc">${p.description}</div>
+            <button class="buy" onclick="buy(${p.id})">Mua ngay</button>
+        </div>`;
+    });
+    products.innerHTML = html;
+})
+.catch(()=>{
+    products.innerHTML = "❌ Không tải được sản phẩm";
+});
+
+// BUY
+function buy(id){
+    fetch('/api/order',{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            user_id:user.id,
+            product_id:id
+        })
+    })
+    .then(()=>alert("🛍️ Đã mua thành công"));
+}
+
+// NAV
+function goOrders(){
+    location.href="orders.html";
+}
+
+function logout(){
+    localStorage.removeItem("user");
+    location.href="login.html";
+}
+</script>
+
+</body>
+</html>
