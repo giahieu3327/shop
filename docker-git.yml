@@ -24,9 +24,6 @@ services:
   backend:
     build: ./backend
 
-    expose:
-      - "5000"
-
     restart: always
 
     depends_on:
@@ -51,24 +48,6 @@ services:
 
     depends_on:
       - backend
-
-    networks:
-      - app-net
-
-    labels:
-      owner: "${OWNER}"
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-
-    restart: always
-
-    depends_on:
-      - db
-
-    environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: root
 
     networks:
       - app-net
