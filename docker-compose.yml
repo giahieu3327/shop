@@ -21,6 +21,9 @@ services:
 
   backend:
     image: giahieu33271/shop-backend:1.0
+    
+    expose:
+      - "5000"
 
     restart: always
 
