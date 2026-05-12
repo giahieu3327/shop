@@ -23,7 +23,10 @@ services:
 
   backend:
     build: ./backend
-
+    
+    expose:
+      - "5000"
+      
     restart: always
 
     depends_on:
