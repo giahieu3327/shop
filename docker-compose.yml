@@ -2,14 +2,13 @@ version: "3.8"
 
 services:
   db:
-    # Bản ổn định kéo từ Docker Hub
-    image: giahieu33271/shop-db:1.0
+    # Sử dụng biến để nhận tên Image gọn gàng từ code C#
+    image: ${IMG_DB}
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: shopdb
     volumes:
-      # Không dùng mount file sql local nữa vì code/data đã đóng gói trong image db:1.0
       - db_data:/var/lib/mysql
     networks:
       - app-net
@@ -17,8 +16,8 @@ services:
       owner: "${OWNER}"
 
   backend:
-    # Bản ổn định kéo từ Docker Hub
-    image: giahieu33271/shop-backend:1.0
+    # Sử dụng biến IMG_BACKEND
+    image: ${IMG_BACKEND}
     expose:
       - "5000"
     restart: always
@@ -35,8 +34,8 @@ services:
       owner: "${OWNER}"
 
   web:
-    # Bản ổn định kéo từ Docker Hub
-    image: giahieu33271/shop-web:1.0
+    # Sử dụng biến IMG_WEB
+    image: ${IMG_WEB}
     restart: always
     depends_on:
       - backend
@@ -47,11 +46,10 @@ services:
 
 networks:
   app-net:
-    # Đảm bảo network tách biệt giữa các lần deploy khác nhau
+    # name linh hoạt theo COMPOSE_PROJECT_NAME (app)
     name: ${COMPOSE_PROJECT_NAME}_app-net
     driver: bridge
 
 volumes:
   db_data:
-    # Volume được định danh theo project để không bị lẫn dữ liệu
     name: ${COMPOSE_PROJECT_NAME}_db_data
