@@ -1,60 +1,48 @@
 version: "3.8"
 
 services:
-
   db:
-    image: mysql:8
-
+    # Sử dụng image được build từ thư mục ./db hoặc mặc định là mysql:8
+    image: ${IMG_DB:-mysql:8}
     restart: always
-
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: shopdb
-
     volumes:
+      # Mount file init nếu bạn có tùy chỉnh DB trong lúc chạy thử
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/mysql
-
     networks:
       - app-net
-
     labels:
       owner: "${OWNER}"
 
   backend:
-    build: ./backend
-    
+    # Image này sẽ được hàm DeployGit build từ ./backend với tag :trial
+    image: ${IMG_BACKEND}
     expose:
       - "5000"
-      
     restart: always
-
     depends_on:
       - db
-
     environment:
       DB_HOST: db
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: shopdb
-
     networks:
       - app-net
-
     labels:
       owner: "${OWNER}"
 
   web:
-    build: ./web
-
+    # Image này sẽ được hàm DeployGit build từ ./web với tag :trial
+    image: ${IMG_WEB}
     restart: always
-
     depends_on:
       - backend
-
     networks:
       - app-net
-
     labels:
       owner: "${OWNER}"
 
