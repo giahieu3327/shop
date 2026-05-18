@@ -15,6 +15,7 @@ services:
     labels:
       owner: "${OWNER}"
       dbtype: "mysql"
+      service: "${SERVICE}"
 
   backend:
     # Sử dụng biến IMG_BACKEND
@@ -33,6 +34,7 @@ services:
       - app-net
     labels:
       owner: "${OWNER}"
+      service: "${SERVICE}"
 
   web:
     # Sử dụng biến IMG_WEB
@@ -44,6 +46,7 @@ services:
       - app-net
     labels:
       owner: "${OWNER}"
+      service: "${SERVICE}"
 
 networks:
   app-net:

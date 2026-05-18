@@ -23,6 +23,7 @@ services:
     labels:
       owner: "${OWNER}"
       dbtype: "mysql"
+      service: "${SERVICE}"
 
   backend:
     build:
@@ -49,6 +50,7 @@ services:
 
     labels:
       owner: "${OWNER}"
+      service: "${SERVICE}"
 
   web:
     build:
@@ -69,6 +71,7 @@ services:
 
     labels:
       owner: "${OWNER}"
+      service: "${SERVICE}"
 
 networks:
 
