@@ -6,6 +6,8 @@ services:
     build:
       context: ./db
 
+    image: ${COMPOSE_PROJECT_NAME}-db:trial
+
     restart: always
 
     environment:
@@ -13,7 +15,6 @@ services:
       MYSQL_DATABASE: shopdb
 
     volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/mysql
 
     networks:
@@ -25,6 +26,8 @@ services:
   backend:
     build:
       context: ./backend
+
+    image: ${COMPOSE_PROJECT_NAME}-backend:trial
 
     expose:
       - "5000"
@@ -50,6 +53,8 @@ services:
     build:
       context: ./web
 
+    image: ${COMPOSE_PROJECT_NAME}-web:trial
+    
     restart: always
 
     depends_on:
