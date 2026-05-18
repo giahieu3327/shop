@@ -14,6 +14,7 @@ services:
       - app-net
     labels:
       owner: "${OWNER}"
+      dbtype: "mysql"
 
   backend:
     # Sử dụng biến IMG_BACKEND

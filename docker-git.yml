@@ -22,6 +22,7 @@ services:
 
     labels:
       owner: "${OWNER}"
+      dbtype: "mysql"
 
   backend:
     build:
@@ -29,10 +30,10 @@ services:
 
     image: ${COMPOSE_PROJECT_NAME}-backend:trial
 
+    restart: always
+
     expose:
       - "5000"
-
-    restart: always
 
     depends_on:
       - db
@@ -54,8 +55,11 @@ services:
       context: ./web
 
     image: ${COMPOSE_PROJECT_NAME}-web:trial
-    
+
     restart: always
+
+    expose:
+      - "80"
 
     depends_on:
       - backend
