@@ -1,85 +1,65 @@
 version: "3.8"
 
 services:
-
   db:
-    build:
-      context: ./db
-
-    image: ${COMPOSE_PROJECT_NAME}-db:trial
-
+    build: ./db
+    image: ${COMPOSE_PROJECT_NAME}-db:${APP_TAG}
     restart: always
-
+    deploy:
+      replicas: 1
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: shopdb
-
     volumes:
       - db_data:/var/lib/mysql
-
     networks:
       - app-net
-
     labels:
       owner: "${OWNER}"
-      dbtype: "mysql"
       service: "${SERVICE}"
 
   backend:
-    build:
-      context: ./backend
-
-    image: ${COMPOSE_PROJECT_NAME}-backend:trial
-
+    build: ./backend
+    image: ${COMPOSE_PROJECT_NAME}-backend:${APP_TAG}
     restart: always
-
+    deploy:
+      replicas: 2 # Scale 2
     expose:
       - "5000"
-
     depends_on:
       - db
-
     environment:
       DB_HOST: db
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: shopdb
-
     networks:
       - app-net
-
     labels:
       owner: "${OWNER}"
       service: "${SERVICE}"
 
   web:
-    build:
-      context: ./web
-
-    image: ${COMPOSE_PROJECT_NAME}-web:trial
-
+    build: ./web
+    image: ${COMPOSE_PROJECT_NAME}-web:${APP_TAG}
     restart: always
-
+    deploy:
+      replicas: 2 # Scale 2
     expose:
       - "80"
-
     depends_on:
       - backend
-
     networks:
       - app-net
-
     labels:
       owner: "${OWNER}"
       service: "${SERVICE}"
 
 networks:
-
   app-net:
     name: ${COMPOSE_PROJECT_NAME}_app-net
     driver: bridge
 
 volumes:
-
   db_data:
     name: ${COMPOSE_PROJECT_NAME}_db_data
