@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     # Sử dụng biến môi trường để nhận tên Image động từ code C#
