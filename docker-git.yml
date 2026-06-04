@@ -7,6 +7,9 @@ services:
     restart: always
     deploy:
       replicas: 1
+    # Đồng bộ hóa expose cổng nội bộ rõ ràng
+    expose:
+      - "3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: shopdb
@@ -17,13 +20,14 @@ services:
     labels:
       owner: "${OWNER}"
       service: "${SERVICE}"
+      dbtype: "mysql"
 
   backend:
     build: ./backend
     image: ${COMPOSE_PROJECT_NAME}-backend:${APP_TAG}
     restart: always
     deploy:
-      replicas: 2 # Scale 2
+      replicas: 2
     expose:
       - "5000"
     depends_on:
@@ -44,7 +48,7 @@ services:
     image: ${COMPOSE_PROJECT_NAME}-web:${APP_TAG}
     restart: always
     deploy:
-      replicas: 2 # Scale 2
+      replicas: 2
     expose:
       - "80"
     depends_on:

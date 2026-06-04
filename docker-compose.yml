@@ -2,9 +2,13 @@ version: "3.8"
 
 services:
   db:
-    # Sử dụng biến để nhận tên Image gọn gàng từ code C#
-    image: giahieu33271/shop-db:1.0
+    # Sử dụng biến môi trường để nhận tên Image động từ code C#
+    image: ${IMG_DB}
     restart: always
+    deploy:
+      replicas: 1
+    expose:
+      - "3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: shopdb
@@ -14,15 +18,17 @@ services:
       - app-net
     labels:
       owner: "${OWNER}"
-      dbtype: "mysql"
       service: "${SERVICE}"
+      dbtype: "mysql"
 
   backend:
-    # Sử dụng biến IMG_BACKEND
-    image: giahieu33271/shop-backend:1.0
-    expose:
-      - "5000"
+    # Sử dụng biến môi trường động
+    image: ${IMG_BACKEND}
     restart: always
+    deploy:
+      replicas: 2 # Mặc định khởi tạo 2 con, thích scale bằng CLI thì scale
+    expose:
+      - "5000"   # Mở cổng nội bộ trong app-net để dịch vụ khác gọi vào
     depends_on:
       - db
     environment:
@@ -37,9 +43,13 @@ services:
       service: "${SERVICE}"
 
   web:
-    # Sử dụng biến IMG_WEB
-    image: giahieu33271/shop-web:1.0
+    # Sử dụng biến môi trường động
+    image: ${IMG_WEB}
     restart: always
+    deploy:
+      replicas: 2 # Mặc định khởi tạo 2 con
+    expose:
+      - "80"     # Chỉ mở nội bộ trong mạng app-net cho LB Container gọi vào
     depends_on:
       - backend
     networks:
@@ -50,10 +60,11 @@ services:
 
 networks:
   app-net:
-    # name linh hoạt theo COMPOSE_PROJECT_NAME (app)
+    # Tên mạng logic ăn theo tên project để biệt lập cụm container của từng app
     name: ${COMPOSE_PROJECT_NAME}_app-net
     driver: bridge
 
 volumes:
   db_data:
+    # Tên volume lưu data của DB để tránh bị mất dữ liệu khi restart/up lại container
     name: ${COMPOSE_PROJECT_NAME}_db_data
