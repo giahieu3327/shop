@@ -1,11 +1,10 @@
 services:
   db:
     build: ./db
-    image: ${COMPOSE_PROJECT_NAME}-db:${APP_TAG}
+    image: ${IMG_DB}
     restart: always
     deploy:
       replicas: 1
-    # Đồng bộ hóa expose cổng nội bộ rõ ràng
     expose:
       - "3306"
     environment:
@@ -19,10 +18,11 @@ services:
       owner: "${OWNER}"
       service: "${SERVICE}"
       dbtype: "mysql"
+      type: "db"
 
   backend:
     build: ./backend
-    image: ${COMPOSE_PROJECT_NAME}-backend:${APP_TAG}
+    image: ${IMG_BACKEND}
     restart: always
     deploy:
       replicas: 2
@@ -40,10 +40,11 @@ services:
     labels:
       owner: "${OWNER}"
       service: "${SERVICE}"
+      type: "backend"
 
   web:
     build: ./web
-    image: ${COMPOSE_PROJECT_NAME}-web:${APP_TAG}
+    image: ${IMG_WEB}
     restart: always
     deploy:
       replicas: 2
@@ -56,6 +57,7 @@ services:
     labels:
       owner: "${OWNER}"
       service: "${SERVICE}"
+      type: "frontend"
 
 networks:
   app-net:
